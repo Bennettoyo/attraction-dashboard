@@ -1,7 +1,9 @@
 import SalesChart from "./components/SalesChart";
+import { AttractionsTable } from "./components/ui/AttractionsTable";
 import CapacityCard from "./components/ui/CapacityCard";
 import VisitorsCard from "./components/ui/VisitorsCard";
 import {
+  useAttractionTable,
   useCurrentCapacity,
   useTicketSales,
   useTodayVisitors,
@@ -11,6 +13,7 @@ function App() {
   const { data: visitorData } = useTodayVisitors();
   const { data: currenCapacityData } = useCurrentCapacity();
   const { data: ticketSales } = useTicketSales();
+  const { data: attractionsTableData } = useAttractionTable();
 
   return (
     <div className="p-5 bg-gray-200 min-h-screen">
@@ -39,6 +42,12 @@ function App() {
         </div>
         {ticketSales && (
           <SalesChart ticketSales={ticketSales} className="mt-5" />
+        )}
+        {attractionsTableData && (
+          <AttractionsTable
+            attractionsTableData={attractionsTableData}
+            className="mt-5"
+          />
         )}
       </div>
     </div>

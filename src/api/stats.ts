@@ -5,7 +5,7 @@ export type TodayVisitorsStats = {
 
 // starting mock values
 let totalVisitors = 2075;
-let yesterdaysVisitors = 4023;
+const yesterdaysVisitors = 4023;
 
 export async function fetchTodayVisitors(): Promise<TodayVisitorsStats> {
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -77,4 +77,80 @@ export async function fetchCapacityStats(): Promise<CapacityStats> {
     currentVisitors,
     capacityPercentage,
   };
+}
+
+export type AttractionStatus = "open" | "closed" | "delayed";
+
+export type Attraction = {
+  id: string;
+  name: string;
+  staffAssigned: number;
+  revenue: number;
+  status: AttractionStatus;
+  waitTime: number | null;
+  lastUpdated: string;
+};
+
+let attractionsData: Attraction[] = [
+  {
+    id: "1",
+    name: "Dragon Coaster",
+    status: "open",
+    waitTime: 45,
+    staffAssigned: 24,
+    revenue: 3200.12,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    name: "Haunted Manor",
+    status: "delayed",
+    waitTime: null,
+    staffAssigned: 27,
+    revenue: 4241.51,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "3",
+    name: "River Rapids",
+    status: "closed",
+    waitTime: null,
+    staffAssigned: 64,
+    revenue: 1253.51,
+    lastUpdated: new Date().toISOString(),
+  },
+];
+
+export async function fetchAttractions(): Promise<Attraction[]> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const newData = attractionsData.map((attraction) => {
+    // waitTime fluctuation for open rides
+    const deltaWait = Math.floor(Math.random() * 15) - 5;
+    const newWaitTime =
+      attraction.waitTime === null
+        ? Math.floor(Math.random() * 30) + 10
+        : Math.max(5, (attraction.waitTime ?? 0) + deltaWait);
+
+    // staff fluctuation
+    const deltaStaff = Math.floor(Math.random() * 3) - 1;
+    const newStaff = Math.max(1, attraction.staffAssigned + deltaStaff);
+
+    // revenue fluctuation (only upward, £50–£500)
+    const revenueIncrease = Math.floor(Math.random() * 451) + 50; // 50–500
+    const newRevenue = attraction.revenue + revenueIncrease;
+
+    return {
+      ...attraction,
+      waitTime: newWaitTime,
+      staffAssigned: newStaff,
+      revenue: newRevenue,
+      lastUpdated: new Date().toISOString(),
+    };
+  });
+
+  // save back to internal state
+  attractionsData = newData;
+
+  return newData;
 }

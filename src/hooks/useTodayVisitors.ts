@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  fetchAttractions,
   fetchCapacityStats,
   fetchTicketSales,
   fetchTodayVisitors,
@@ -26,5 +27,13 @@ export function useTicketSales() {
     queryKey: ["stats", "ticket-sales"],
     queryFn: fetchTicketSales, // fetch latest ticket sales
     refetchInterval: 500, // refresh every 5 seconds
+  });
+}
+
+export function useAttractionTable() {
+  return useQuery({
+    queryKey: ["stats", "table-data"],
+    queryFn: fetchAttractions,
+    refetchInterval: 500,
   });
 }
