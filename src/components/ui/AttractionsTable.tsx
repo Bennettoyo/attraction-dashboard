@@ -10,6 +10,7 @@ import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
+  Table,
 } from "@tanstack/react-table";
 
 import { useEffect, useState } from "react";
@@ -109,35 +110,34 @@ export function AttractionsTable({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
- function downloadCSV(table: ReturnType<typeof useReactTable>) {
-  // headers
-  const headers = table.getAllColumns().map(col => col.id);
+  function downloadCSV(table: Table<Attraction>) {
+    // headers
+    const headers = table.getAllColumns().map((col) => col.id);
 
-  // rows
-  const rows = table.getRowModel().rows.map(row =>
-    row.getVisibleCells().map(cell => {
-      const colId = cell.column.id;
+    // rows
+    const rows = table.getRowModel().rows.map((row) =>
+      row.getVisibleCells().map((cell) => {
+        const colId = cell.column.id;
 
-      // Get raw value instead of JSX
-      const rawValue = row.original[colId as keyof typeof row.original];
+        // Get raw value instead of JSX
+        const rawValue = row.original[colId as keyof typeof row.original];
 
-      // format revenue nicely if needed
-      if (colId === "revenue" && typeof rawValue === "number") {
-        return `"£${rawValue.toLocaleString("en-GB")}"`;
-      }
+        // format revenue nicely if needed
+        if (colId === "revenue" && typeof rawValue === "number") {
+          return `"£${rawValue.toLocaleString("en-GB")}"`;
+        }
 
-      return `"${rawValue ?? ""}"`;
-    })
-  );
+        return `"${rawValue ?? ""}"`;
+      })
+    );
 
-  const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.setAttribute("download", "attractions.csv");
-  link.click();
-}
-
+    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "attractions.csv");
+    link.click();
+  }
 
   useEffect(() => {
     setData(attractionsTableData); // whenever prop changes, update state
