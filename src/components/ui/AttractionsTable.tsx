@@ -79,6 +79,30 @@ const columns: ColumnDef<Attraction>[] = [
     },
   },
   {
+    accessorKey: "capacity",
+    header: "Capacity",
+  },
+  {
+    accessorKey: "queueLength",
+    header: "Queue Length",
+    cell: ({ getValue }) => getValue<number>() ?? 0,
+  },
+  {
+    accessorKey: "fastPass",
+    header: "Fast Pass",
+    cell: ({ getValue }) => {
+      const value = getValue<number | null>();
+      let text = "";
+      if (value) {
+        text = "Yes";
+      } else {
+        text = "No";
+      }
+
+      return text;
+    },
+  },
+  {
     accessorKey: "lastUpdated",
     header: "Updated",
     cell: ({ getValue }) => new Date(getValue<string>()).toLocaleTimeString(),
@@ -154,7 +178,7 @@ export function AttractionsTable({
       <CardContent>
         <div style={{ width: "100%", height: 300 }}>
           <ResponsiveContainer
-            className="overflow-x-auto"
+            className="overflow-x-auto overflow-y-hidden"
             width="100%"
             height="100%"
           >
@@ -231,7 +255,7 @@ export function AttractionsTable({
                     }`}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3">
+                      <td key={cell.id} className="px-4 py-3 whitespace-nowrap">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

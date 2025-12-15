@@ -86,9 +86,12 @@ export type Attraction = {
   name: string;
   staffAssigned: number;
   revenue: number;
+  capacity: number;
+  queueLength: number;
   status: AttractionStatus;
   waitTime: number | null;
   lastUpdated: string;
+  fastPass: boolean;
 };
 
 let attractionsData: Attraction[] = [
@@ -99,6 +102,9 @@ let attractionsData: Attraction[] = [
     waitTime: 45,
     staffAssigned: 24,
     revenue: 3200.12,
+    capacity: 250,
+    queueLength: 31,
+    fastPass: true,
     lastUpdated: new Date().toISOString(),
   },
   {
@@ -108,6 +114,9 @@ let attractionsData: Attraction[] = [
     waitTime: null,
     staffAssigned: 27,
     revenue: 4241.51,
+    capacity: 535,
+    queueLength: 142,
+    fastPass: true,
     lastUpdated: new Date().toISOString(),
   },
   {
@@ -117,6 +126,9 @@ let attractionsData: Attraction[] = [
     waitTime: null,
     staffAssigned: 64,
     revenue: 1253.51,
+    capacity: 113,
+    queueLength: 214,
+    fastPass: false,
     lastUpdated: new Date().toISOString(),
   },
 ];
@@ -140,11 +152,19 @@ export async function fetchAttractions(): Promise<Attraction[]> {
     const revenueIncrease = Math.floor(Math.random() * 451) + 50; // 50–500
     const newRevenue = attraction.revenue + revenueIncrease;
 
+    // queueLength fluctuation
+    const deltaQueue = Math.floor(Math.random() * 21) - 10; // -10 to +10
+    const newQueueLength = Math.max(
+      0,
+      (attraction.queueLength ?? 0) + deltaQueue
+    );
+
     return {
       ...attraction,
       waitTime: newWaitTime,
       staffAssigned: newStaff,
       revenue: newRevenue,
+      queueLength: newQueueLength,
       lastUpdated: new Date().toISOString(),
     };
   });
